@@ -3,24 +3,31 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Meme Generator</title>
+    <title>Text2Meme</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
 </head>
 <body>
     <header>
-        <h1>Meme Generator</h1>
+        <h1>Text2Meme</h1>
         <p>Create hilarious memes in seconds!</p>
     </header>
 
     <main>
         <section class="input-section">
-            <form method="POST">
-                <label for="context">What’s your meme about?</label>
-                <input type="text" id="context" name="context" placeholder="e.g., When you finish a project" required>
-                <button type="submit">Generate Memes</button>
+            <form method="POST" id="meme-form">
+                <div class="form-group">
+                    <label for="context">What’s your meme about?</label>
+                    <input type="text" id="context" name="context" placeholder="e.g., When you finish a project" required>
+                </div>
+                <button type="submit" id="generate-btn">Generate Memes</button>
             </form>
+            <div id="loading" class="pulse" style="display: none;">Loading...</div>
         </section>
+
+        {% if error %}
+            <p class="error-message">{{ error }}</p>
+        {% endif %}
 
         {% if memes %}
             <section class="meme-gallery">
@@ -28,10 +35,10 @@
                 <div class="meme-container">
                     {% for meme in memes %}
                         <div class="meme-card">
-                            <img src="{{ meme.url }}" alt="{{ meme.template }} meme">
+                            <img src="{{ meme.url }}" alt="{{ meme.template }} meme" loading="lazy">
                             <div class="meme-info">
                                 <h3>{{ meme.template | title }}</h3>
-                                <a href="/download/{{ meme.template }}/{{ meme.url.split('/')[-2] }}/{{ meme.url.split('/')[-1].split('.png')[0] }}" class="download-btn">Download</a>
+                                <a href="/download/{{ meme.template }}/{{ meme.url.split('/')[-2] }}/{{ meme.url.split('/')[-1].split('.jpg')[0] }}" class="download-btn">Download</a>
                             </div>
                         </div>
                     {% endfor %}
@@ -41,7 +48,15 @@
     </main>
 
     <footer>
-        <p>Made with ❤️</p>
+        <p>Made with ❤️ by Yashas B N</p>
     </footer>
+
+    <script>
+        // Loading pulse logic
+        document.getElementById('meme-form').addEventListener('submit', function() {
+            document.getElementById('generate-btn').disabled = true;
+            document.getElementById('loading').style.display = 'block';
+        });
+    </script>
 </body>
 </html>
