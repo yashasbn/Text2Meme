@@ -4,6 +4,7 @@ import io
 from PIL import Image as PILImage
 import google.generativeai as genai
 import random
+import random
 
 # Configure Gemini API
 GEMINI_API_KEY = "Your_gemini_api_key"  # Your API key
@@ -11,7 +12,6 @@ genai.configure(api_key=GEMINI_API_KEY)
 
 app = Flask(__name__)
 
-# Function to get meme template IDs from Memegen.link API
 def get_meme_template_ids():
     url = "https://api.memegen.link/templates"
     try:
@@ -24,9 +24,8 @@ def get_meme_template_ids():
             return []
     except Exception as e:
         print(f"Error fetching templates: {e}")
-        return ['buzz', 'doge', 'fry', 'pigeon', 'drake']  # Fallback templates
+        return ['buzz', 'doge', 'fry', 'pigeon', 'drake']  
 
-# Function to generate meme text using Gemini API
 def generate_meme_text(context):
     model = genai.GenerativeModel("gemini-1.5-flash")
     prompt = f"""
@@ -46,9 +45,8 @@ def generate_meme_text(context):
         return [line.strip().strip('"') for line in lines]
     except Exception as e:
         print(f"Error with Gemini API: {e}")
-        return ["GEMINI BROKE", "SEND HELP"]
+        return ["GEMINI BROKE", "WRONG API KEY"]
 
-# Function to generate meme URLs and shuffle them
 def generate_meme_urls(template_ids, top_text, bottom_text):
     BASE_URL = "https://api.memegen.link/images/"
     meme_data = []
@@ -59,16 +57,18 @@ def generate_meme_urls(template_ids, top_text, bottom_text):
         url = f"{BASE_URL}{template}/{top}/{bottom}.png"
         meme_data.append({"template": template, "url": url})
     
-    random.shuffle(meme_data)  # Shuffle the order
+    random.shuffle(meme_data) 
     return meme_data
 
-# Routes
 @app.route('/', methods=['GET', 'POST'])
 def index():
     if request.method == 'POST':
         context = request.form['context']
         template_ids = get_meme_template_ids()
         top_text, bottom_text = generate_meme_text(context)
+        if top_text == "GEMINI BROKE":
+            template_ids = ['doge', 'khaby-lame', 'jim', 'fwp', 'touch', 'sadfrog','awesome-awkward', 'prop3', 'astronaut', 'grave', 'noidea', 'glasses']
+            random.shuffle(template_ids)
         memes = generate_meme_urls(template_ids, top_text, bottom_text)
         return render_template('index.html', memes=memes, context=context)
     return render_template('index.html', memes=None)
@@ -79,13 +79,12 @@ def download_meme(template, top, bottom):
     try:
         response = requests.get(url)
         if response.status_code == 200:
-            # Open and crop the image
+
             img = PILImage.open(io.BytesIO(response.content))
             width, height = img.size
-            crop_height = int(height * 0.85)  # Crop bottom 15% to remove watermark
+            crop_height = int(height * 0.95)  
             cropped_img = img.crop((0, 0, width, crop_height))
-            
-            # Save to bytes
+     
             img_byte_arr = io.BytesIO()
             cropped_img.save(img_byte_arr, format='PNG')
             img_byte_arr.seek(0)
