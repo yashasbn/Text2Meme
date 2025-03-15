@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Meme Generator</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <h1>Meme Generator</h1>
+        <p>Create hilarious memes in seconds!</p>
+    </header>
+
+    <main>
+        <section class="input-section">
+            <form method="POST">
+                <label for="context">What’s your meme about?</label>
+                <input type="text" id="context" name="context" placeholder="e.g., When you finish a project" required>
+                <button type="submit">Generate Memes</button>
+            </form>
+        </section>
+
+        {% if memes %}
+            <section class="meme-gallery">
+                <h2>Memes for "{{ context }}"</h2>
+                <div class="meme-container">
+                    {% for meme in memes %}
+                        <div class="meme-card">
+                            <img src="{{ meme.url }}" alt="{{ meme.template }} meme">
+                            <div class="meme-info">
+                                <h3>{{ meme.template | title }}</h3>
+                                <a href="/download/{{ meme.template }}/{{ meme.url.split('/')[-2] }}/{{ meme.url.split('/')[-1].split('.png')[0] }}" class="download-btn">Download</a>
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            </section>
+        {% endif %}
+    </main>
+
+    <footer>
+        <p>Made with ❤️</p>
+    </footer>
+</body>
+</html>
