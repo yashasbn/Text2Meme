@@ -139,7 +139,7 @@ main {
 
 .meme-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); /* Default layout for small screens */
     gap: 2rem;
     justify-items: center;
 }
@@ -159,11 +159,15 @@ main {
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
 }
 
+/* Meme Card Image */
 .meme-card img {
     width: 100%;
     height: auto;
     display: block;
     border-bottom: 2px solid #f0f0f0;
+    object-fit: cover;  /* Ensure the image covers the container */
+    object-position: top;  /* Focus the top part of the image */
+    clip-path: inset(0 0 3.8% 0); /* Crop 5% from the bottom */
 }
 
 .meme-info {
@@ -206,6 +210,20 @@ footer {
 }
 
 /* Responsive Design */
+@media (min-width: 768px) {
+    /* When the screen width is larger than 768px, show 3 tiles per row */
+    .meme-container {
+        grid-template-columns: repeat(3, 1fr); /* Show 3 items per row */
+    }
+}
+
+@media (min-width: 1024px) {
+    /* When the screen width is larger than 1024px, show 4 tiles per row */
+    .meme-container {
+        grid-template-columns: repeat(4, 1fr); /* Show 4 items per row */
+    }
+}
+
 @media (max-width: 768px) {
     header h1 {
         font-size: 2.2rem;
@@ -224,7 +242,11 @@ footer {
     }
 
     .meme-container {
-        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); /* 2 tiles per row on smaller screens */
+    }
+
+    .meme-card {
+        max-width: 100%;
     }
 }
 
@@ -241,6 +263,11 @@ footer {
         font-size: 1.2rem;
     }
 
+    .input-section input {
+        padding: 0.8rem;
+        font-size: 1rem;
+    }
+
     .input-section button {
         padding: 0.8rem 2rem;
         font-size: 1rem;
@@ -252,5 +279,9 @@ footer {
 
     .meme-card {
         max-width: 100%;
+    }
+
+    .meme-card img {
+        clip-path: inset(0 0 5% 0); /* Crop more from the bottom on smaller screens */
     }
 }
