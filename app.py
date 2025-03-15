@@ -45,7 +45,7 @@ def generate_meme_text(context):
         return [line.strip().strip('"') for line in lines]
     except Exception as e:
         print(f"Error with Gemini API: {e}")
-        return ["GEMINI BROKE", "WRONG API KEY"]
+        return ["GEMINI BROKE", "INVALID API KEY"]
 
 def generate_meme_urls(template_ids, top_text, bottom_text):
     BASE_URL = "https://api.memegen.link/images/"
